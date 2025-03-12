@@ -1,0 +1,46 @@
+DELIMITER $$
+
+CREATE TRIGGER before_insert_puja
+BEFORE INSERT ON puja
+FOR EACH ROW
+BEGIN
+    DECLARE user_role VARCHAR(64);
+
+    -- Obtener el rol del usuario que intenta hacer la puja
+    SELECT USUARIO_ROL INTO user_role 
+    FROM usuario 
+    WHERE USUARIO_ID = NEW.USUARIO_ID;
+
+    -- Si el usuario no es comprador, se lanza un error
+    IF user_role IS NULL OR user_role != 'comprador' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Solo los compradores pueden hacer una puja';
+    END IF;
+END $$
+
+
+DELIMITER //
+
+CREATE TRIGGER verificar_puja
+BEFORE INSERT ON PUJA
+FOR EACH ROW
+BEGIN
+    DECLARE pago_final DECIMAL(10, 2);
+
+    -- Obtén el valor de SUBASTA_PAGO_FINAL correspondiente a la SUBASTA_ID de la puja
+    SELECT SUBASTA_PAGO_FINAL INTO pago_final
+    FROM SUBASTA
+    WHERE SUBASTA_ID = NEW.SUBASTA_ID;
+
+    -- Verifica que el monto de la puja sea mayor que el SUBASTA_PAGO_FINAL
+    IF NEW.PUJA_MONTO <= pago_final THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El monto de la puja debe ser mayor que el pago final de la subasta';
+    ELSE
+        -- Si el monto de la puja es mayor, actualiza SUBASTA_PAGO_FINAL con el nuevo monto de la puja
+        UPDATE SUBASTA
+        SET SUBASTA_PAGO_FINAL = NEW.PUJA_MONTO
+        WHERE SUBASTA_ID = NEW.SUBASTA_ID;
+    END IF;
+END//
+
+DELIMITER ;

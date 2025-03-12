@@ -1,0 +1,44 @@
+DELIMITER $$
+
+CREATE TRIGGER verificar_estado_subasta
+BEFORE INSERT ON puja
+FOR EACH ROW
+BEGIN
+    -- Verificar si la subasta está inactiva (estado = 0)
+    DECLARE estado INT;
+
+    -- Obtener el estado de la subasta
+    SELECT SUBASTA_ESTADO INTO estado
+    FROM subasta
+    WHERE SUBASTA_ID = NEW.SUBASTA_ID;
+
+    -- Si la subasta está inactiva (estado = 0), se cancela la inserción
+    IF estado = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se pueden realizar pujas, la subasta está inactiva.';
+    END IF;
+END $$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE TRIGGER verificar_subasta_activa
+BEFORE INSERT ON subasta
+FOR EACH ROW
+BEGIN
+    -- Verificar si ya existe una subasta activa (estado = 1) para el mismo vehículo
+    DECLARE subasta_activa INT;
+
+    -- Verificar si hay alguna subasta activa para el vehículo
+    SELECT COUNT(*) INTO subasta_activa
+    FROM subasta
+    WHERE VEHICULO_ID = NEW.VEHICULO_ID AND SUBASTA_ESTADO = 1;
+
+    -- Si hay una subasta activa para el vehículo, se cancela la inserción
+    IF subasta_activa > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Ya existe una subasta activa para este vehículo.';
+    END IF;
+END $$
+
+DELIMITER ;

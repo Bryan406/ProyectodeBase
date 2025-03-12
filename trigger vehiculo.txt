@@ -1,0 +1,14 @@
+DELIMITER $$
+
+CREATE TRIGGER actualizar_estado_vehiculo_pago
+AFTER INSERT ON pago
+FOR EACH ROW
+BEGIN
+    -- Actualizar el estado del vehículo a 2 (vendido) cuando haya un pago
+    UPDATE vehiculo v
+    JOIN subasta s ON v.VEHICULO_ID = s.VEHICULO_ID
+    SET v.VEHICULO_ESTADO_DE_VENTA = 2
+    WHERE s.SUBASTA_ID = NEW.SUBASTA_ID;
+END $$
+
+DELIMITER ;

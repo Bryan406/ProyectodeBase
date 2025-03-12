@@ -1,0 +1,472 @@
+DELIMITER $$
+
+CREATE TRIGGER `after_usuario_insert_auditoria` AFTER INSERT ON `usuario` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NULL, 
+        NEW.USUARIO_ID, 
+        NOW(), 
+        'INSERT', 
+        'usuario', 
+        CONCAT('Nuevo usuario insertado: ', NEW.USUARIO_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_usuario_update_auditoria` AFTER UPDATE ON `usuario` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NULL, 
+        NEW.USUARIO_ID, 
+        NOW(), 
+        'UPDATE', 
+        'usuario', 
+        CONCAT('Usuario actualizado: ', NEW.USUARIO_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_usuario_delete_auditoria` AFTER DELETE ON `usuario` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NULL, 
+        OLD.USUARIO_ID, 
+        NOW(), 
+        'DELETE', 
+        'usuario', 
+        CONCAT('Usuario eliminado: ', OLD.USUARIO_ID)
+    );
+END$$
+
+DELIMITER ;
+
+
+
+
+DELIMITER $$
+
+CREATE TRIGGER `after_comprador_insert` AFTER INSERT ON `comprador` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NULL, 
+        NEW.USUARIO_ID, 
+        NOW(), 
+        'INSERT', 
+        'comprador', 
+        CONCAT('Nuevo comprador insertado: ', NEW.USUARIO_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_comprador_update` AFTER UPDATE ON `comprador` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NULL, 
+        NEW.USUARIO_ID, 
+        NOW(), 
+        'UPDATE', 
+        'comprador', 
+        CONCAT('Comprador actualizado: ', NEW.USUARIO_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_comprador_delete` AFTER DELETE ON `comprador` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NULL, 
+        OLD.USUARIO_ID, 
+        NOW(), 
+        'DELETE', 
+        'comprador', 
+        CONCAT('Comprador eliminado: ', OLD.USUARIO_ID)
+    );
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE TRIGGER `after_pago_insert` AFTER INSERT ON `pago` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NEW.SUBASTA_ID, 
+        NULL, 
+        NOW(), 
+        'INSERT', 
+        'pago', 
+        CONCAT('Nuevo pago insertado: ', NEW.PAGO_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_pago_update` AFTER UPDATE ON `pago` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NEW.SUBASTA_ID, 
+        NULL, 
+        NOW(), 
+        'UPDATE', 
+        'pago', 
+        CONCAT('Pago actualizado: ', NEW.PAGO_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_pago_delete` AFTER DELETE ON `pago` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        OLD.SUBASTA_ID, 
+        NULL, 
+        NOW(), 
+        'DELETE', 
+        'pago', 
+        CONCAT('Pago eliminado: ', OLD.PAGO_ID)
+    );
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER `after_participar_insert` AFTER INSERT ON `participar` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NEW.SUBASTA_ID, 
+        NEW.USUARIO_ID, 
+        NOW(), 
+        'INSERT', 
+        'participar', 
+        CONCAT('Nueva participación insertada: Subasta ', NEW.SUBASTA_ID, ', Usuario ', NEW.USUARIO_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_participar_update` AFTER UPDATE ON `participar` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NEW.SUBASTA_ID, 
+        NEW.USUARIO_ID, 
+        NOW(), 
+        'UPDATE', 
+        'participar', 
+        CONCAT('Participación actualizada: Subasta ', NEW.SUBASTA_ID, ', Usuario ', NEW.USUARIO_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_participar_delete` AFTER DELETE ON `participar` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        OLD.SUBASTA_ID, 
+        OLD.USUARIO_ID, 
+        NOW(), 
+        'DELETE', 
+        'participar', 
+        CONCAT('Participación eliminada: Subasta ', OLD.SUBASTA_ID, ', Usuario ', OLD.USUARIO_ID)
+    );
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE TRIGGER `after_puja_insert_auditoria` AFTER INSERT ON `puja` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NEW.SUBASTA_ID, 
+        NEW.USUARIO_ID, 
+        NOW(), 
+        'INSERT', 
+        'puja', 
+        CONCAT('Nueva puja insertada: ', NEW.PUJA_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_puja_update_auditoria` AFTER UPDATE ON `puja` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NEW.SUBASTA_ID, 
+        NEW.USUARIO_ID, 
+        NOW(), 
+        'UPDATE', 
+        'puja', 
+        CONCAT('Puja actualizada: ', NEW.PUJA_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_puja_delete_auditoria` AFTER DELETE ON `puja` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        OLD.SUBASTA_ID, 
+        OLD.USUARIO_ID, 
+        NOW(), 
+        'DELETE', 
+        'puja', 
+        CONCAT('Puja eliminada: ', OLD.PUJA_ID)
+    );
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE TRIGGER `after_subasta_insert` AFTER INSERT ON `subasta` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NEW.SUBASTA_ID, 
+        NEW.USUARIO_ID, 
+        NOW(), 
+        'INSERT', 
+        'subasta', 
+        CONCAT('Nueva subasta insertada: ', NEW.SUBASTA_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_subasta_update` AFTER UPDATE ON `subasta` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NEW.SUBASTA_ID, 
+        NEW.USUARIO_ID, 
+        NOW(), 
+        'UPDATE', 
+        'subasta', 
+        CONCAT('Subasta actualizada: ', NEW.SUBASTA_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_subasta_delete` AFTER DELETE ON `subasta` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        OLD.SUBASTA_ID, 
+        OLD.USUARIO_ID, 
+        NOW(), 
+        'DELETE', 
+        'subasta', 
+        CONCAT('Subasta eliminada: ', OLD.SUBASTA_ID)
+    );
+END$$
+
+DELIMITER ;
+
+
+
+DELIMITER $$
+
+CREATE TRIGGER `after_vehiculo_insert` AFTER INSERT ON `vehiculo` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NULL, 
+        NEW.USUARIO_ID, 
+        NOW(), 
+        'INSERT', 
+        'vehiculo', 
+        CONCAT('Nuevo vehículo insertado: ', NEW.VEHICULO_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_vehiculo_update` AFTER UPDATE ON `vehiculo` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NULL, 
+        NEW.USUARIO_ID, 
+        NOW(), 
+        'UPDATE', 
+        'vehiculo', 
+        CONCAT('Vehículo actualizado: ', NEW.VEHICULO_ID)
+    );
+END$$
+
+CREATE TRIGGER `after_vehiculo_delete` AFTER DELETE ON `vehiculo` FOR EACH ROW
+BEGIN
+    INSERT INTO `auditoria` (
+        `SUBASTA_ID`, 
+        `AUDITORIA_USUARIO_ID`, 
+        `AUDITORIA_FECHA_HORA`, 
+        `AUDITORIA_ACCION`, 
+        `AUDITORIA_TABLA_AFECTADA`, 
+        `AUDITORIA_DETALLE_CAMBIO`
+    ) VALUES (
+        NULL, 
+        OLD.USUARIO_ID, 
+        NOW(), 
+        'DELETE', 
+        'vehiculo', 
+        CONCAT('Vehículo eliminado: ', OLD.VEHICULO_ID)
+    );
+END$$
+
+DELIMITER ;
+
+
+
+SHOW TRIGGERS;
+
+DELIMITER //
+
+-- Trigger para INSERT en la tabla vendedor
+CREATE TRIGGER trg_vendedor_insert
+AFTER INSERT ON vendedor
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria (SUBASTA_ID, AUDITORIA_USUARIO_ID, AUDITORIA_FECHA_HORA, AUDITORIA_ACCION, AUDITORIA_TABLA_AFECTADA, AUDITORIA_DETALLE_CAMBIO)
+    VALUES (NULL, NEW.USUARIO_ID, NOW(), 'INSERT', 'vendedor', CONCAT('Nuevo vendedor agregado con USUARIO_ID ', NEW.USUARIO_ID));
+END;
+//
+
+-- Trigger para UPDATE en la tabla vendedor
+CREATE TRIGGER trg_vendedor_update
+AFTER UPDATE ON vendedor
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria (SUBASTA_ID, AUDITORIA_USUARIO_ID, AUDITORIA_FECHA_HORA, AUDITORIA_ACCION, AUDITORIA_TABLA_AFECTADA, AUDITORIA_DETALLE_CAMBIO)
+    VALUES (NULL, NEW.USUARIO_ID, NOW(), 'UPDATE', 'vendedor', CONCAT('Vendedor con USUARIO_ID ', OLD.USUARIO_ID, ' actualizado.'));
+END;
+//
+
+-- Trigger para DELETE en la tabla vendedor
+CREATE TRIGGER trg_vendedor_delete
+AFTER DELETE ON vendedor
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria (SUBASTA_ID, AUDITORIA_USUARIO_ID, AUDITORIA_FECHA_HORA, AUDITORIA_ACCION, AUDITORIA_TABLA_AFECTADA, AUDITORIA_DETALLE_CAMBIO)
+    VALUES (NULL, OLD.USUARIO_ID, NOW(), 'DELETE', 'vendedor', CONCAT('Vendedor con USUARIO_ID ', OLD.USUARIO_ID, ' eliminado.'));
+END;
+//
+
+DELIMITER ;

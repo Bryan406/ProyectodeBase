@@ -1,0 +1,66 @@
+para que el vehiculo_id y el usuario_id sean los mismos en la tabla subasta
+
+DELIMITER $$
+
+CREATE TRIGGER validate_usuario_vehiculo_relation_before_insert
+BEFORE INSERT ON subasta
+FOR EACH ROW
+BEGIN
+    -- Verificar si el USUARIO_ID tiene el VEHICULO_ID correspondiente
+    DECLARE vehiculo_usuario_id INT;
+    
+    -- Obtener el USUARIO_ID del vehículo que corresponde al VEHICULO_ID
+    SELECT USUARIO_ID INTO vehiculo_usuario_id
+    FROM vehiculo
+    WHERE VEHICULO_ID = NEW.VEHICULO_ID;
+
+    -- Comparar si el USUARIO_ID de la subasta coincide con el USUARIO_ID del vehículo
+    IF NEW.USUARIO_ID != vehiculo_usuario_id THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El VEHICULO_ID no pertenece al USUARIO_ID proporcionado.';
+    END IF;
+END $$
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+Para que subasta_estado cambie a 0 cuando la duración llegue a 	00:00:00
+
+DELIMITER $$
+
+CREATE TRIGGER update_subasta_estado
+BEFORE INSERT ON subasta
+FOR EACH ROW
+BEGIN
+    -- Si la duración es exactamente 00:00:00, asignar 0 a SUBASTA_ESTADO
+    IF NEW.SUBASTA_DURACION = '00:00:00' THEN
+        SET NEW.SUBASTA_ESTADO = 0;
+    -- Si la duración es mayor que 00:00:00, asignar 1 a SUBASTA_ESTADO
+    ELSEIF NEW.SUBASTA_DURACION > '00:00:00' THEN
+        SET NEW.SUBASTA_ESTADO = 1;
+    END IF;
+END $$
+
+DELIMITER ;
+
+
+
+
+
+Para que subasta_ID sea incremental
+
+ALTER TABLE subasta MODIFY SUBASTA_ID INT(11) NOT NULL AUTO_INCREMENT;
+
+
+
+
+Para agregar una subasta
+
+INSERT INTO subasta (USUARIO_ID, VEHICULO_ID, SUBASTA_FECHA, SUBASTA_DURACION, SUBASTA_ESTADO, SUBASTA_PAGO_FINAL)
+VALUES (1, 2, '2022-01-01 10:00:00', '01:00:00', NULL, 20000);
+

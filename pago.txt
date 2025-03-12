@@ -1,0 +1,17 @@
+DELIMITER //
+CREATE TRIGGER trg_insert_pago
+BEFORE INSERT ON pago
+FOR EACH ROW
+BEGIN
+    DECLARE pago_final DECIMAL(10,0);
+    
+    -- Obtener el valor de SUBASTA_PAGO_FINAL de la tabla subasta
+    SELECT SUBASTA_PAGO_FINAL INTO pago_final
+    FROM subasta
+    WHERE SUBASTA_ID = NEW.SUBASTA_ID;
+    
+    -- Insertar el valor en PAGO_MONTO
+    SET NEW.PAGO_MONTO = pago_final;
+END;
+//
+DELIMITER ;

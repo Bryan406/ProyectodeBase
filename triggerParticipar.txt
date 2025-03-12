@@ -1,0 +1,19 @@
+DELIMITER $$
+
+CREATE TRIGGER `after_puja_insert`
+AFTER INSERT ON `puja`
+FOR EACH ROW
+BEGIN
+  DECLARE vendedor_id INT;
+
+  -- Obtener el vendedor_id relacionado con la subasta (de la tabla 'subasta')
+  SELECT `USUARIO_ID` INTO vendedor_id
+  FROM `subasta`
+  WHERE `SUBASTA_ID` = NEW.SUBASTA_ID;
+
+  -- Insertar los datos en la tabla 'participar'
+  INSERT INTO `participar` (`SUBASTA_ID`, `USUARIO_ID`, `COMPRADOR_ID`)
+  VALUES (NEW.SUBASTA_ID, vendedor_id, NEW.USUARIO_ID);
+END $$
+
+DELIMITER ;
